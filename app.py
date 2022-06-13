@@ -116,12 +116,14 @@ def one_order(order_id):
     elif request.method == 'PUT':
         order_data = json.loads(request.data)
         order = db.session.query(Order).get(order_id)
+        mont_start, day_start, year_start = [int(_) for _ in order_data['start_date'].split('/')]
+        mont_end, day_end, year_end = order_data['end_date'].split('/')
         if order is None:
             return "Пользователь не найден"
         order.name = order_data['name']
         order.description = order_data['description']
-        order.start_date = order_data['start_date']
-        order.end_date = order_data['end_date']
+        order.start_date = datetime.date(month=mont_start, day=day_start, year=year_start)
+        order.end_date = datetime.date(month=int(mont_end), day=int(day_end), year=int(year_end))
         order.address = order_data['address']
         order.price = order_data['price']
         order.customer_id = order_data['customer_id']
